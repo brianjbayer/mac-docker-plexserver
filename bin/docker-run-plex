@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [ -z "${PLEX_CLAIM}" ];
+then
+  echo "ERROR: The Plex Claim token must be specified in PLEX_CLAIM " 1>&2
+  error=1
+fi
+if [ -z "${PLEX_CONFIG}" ];
+then
+  echo "ERROR: The Plex server config volume must be specified in PLEX_CONFIG " 1>&2
+  error=3
+fi
+if [ -z "${PLEX_TRANSCODE}" ];
+then
+  echo "ERROR: The Plex server transcode volume must be specified in PLEX_TRANSCODE " 1>&2
+  error=5
+fi
+if [ -z "${PLEX_MEDIA}" ];
+then
+  echo "ERROR: The Plex server media must be specifed in PLEX_MEDIA"
+  error=10
+fi
+# EXIT if any errors
+if [ "${error+x}" ];
+then
+  exit $error
+fi
+
+echo ">>> RUNNING PLEX SERVER..."
+echo "  Plex Claim token: [${PLEX_CLAIM}]"
+echo "  Plex server config: [${PLEX_CONFIG}]"
+echo "  Plex server transcode: [${PLEX_TRANSCODE}]"
+echo "  Plex server media mount: [${PLEX_MEDIA}]"
+echo ">>> ..."
+docker run -d --name plex \
+ -p 32400:32400/tcp \
+ -p 3005:3005/tcp \
+ -p 8324:8324/tcp \
+ -p 32469:32469/tcp \
+ -p 1900:1900/udp \
+ -p 32410:32410/udp \
+ -p 32412:32412/udp \
+ -p 32413:32413/udp \
+ -p 32414:32414/udp \
+ -e TZ="America/New_York" \
+ -e PLEX_CLAIM="${PLEX_CLAIM}" \
+ -v "${PLEX_CONFIG}":/config \
+ -v "${PLEX_TRANSCODE}":/transcode \
+ -v "${PLEX_MEDIA}":/Media \
+ plexinc/pms-docker

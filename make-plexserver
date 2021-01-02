@@ -1,0 +1,74 @@
+#!/bin/bash
+# Makes a default plex server based out of this directory
+
+create_directory () {
+  dir=$1
+  echo ">>>     creating directory: [${dir}]"
+  mkdir -p "${dir}"
+  if [[ ! -d "${dir}" ]]; then
+    echo "=== ERROR: Unable to create directory [${dir}] ===" 1>&2
+    exit 66
+  fi
+}
+
+echo ">>>"
+echo ">>> This script creates a default container-based Plex Media Server"
+echo ">>> based out of this directory."
+echo ""
+read -p "Do you wish to proceed  ('n' to exit): " response
+if [[ $response == 'n' ]] || [[ $response == 'N' ]]; then
+  echo ">>> buh-bye"
+  exit
+fi
+
+echo ""
+read -p "Enter the full path to starting directory of your Media for the Plex Media Server: " plexservermedia
+echo ""
+echo ">>> Plex Media Server Media at [${plexservermedia}]"
+
+echo ">>>"
+echo ">>> Creating Plex Server temp data directories..."
+plexserverdatadir="${PWD}/.plex-server/data"
+echo ">>>   creating Plex Server data directory: [${plexserverdatadir}]"
+create_directory "${plexserverdatadir}"
+
+configdir="${plexserverdatadir}/config"
+echo ">>>   creating Plex Server data config directory: [${configdir}]"
+create_directory "${configdir}"
+
+transcodedir="${plexserverdatadir}/transcode"
+echo ">>>   creating Plex Server data transcode directory: [${transcodedir}]"
+create_directory "${transcodedir}"
+
+echo ">>>"
+echo ">>> Environment Variables for Plex Media Server..."
+configenv="PLEX_CONFIG=${configdir}"
+transcodeenv="PLEX_TRANSCODE=${transcodedir}"
+plexmediaenv="PLEX_MEDIA=${plexservermedia}"
+echo ">>>   [${configenv}]"
+echo ">>>   [${transcodeenv}]"
+echo ">>>   [${plexmediaenv}]"
+
+echo ">>> Creating .env file for Plex Server docker-compose..."
+if [[ -f ".env" ]]; then
+  echo "=== ERROR: .env file already exists ===" 1>&2
+  exit 88
+fi
+
+echo "${configenv}" >> ".env"
+echo "${transcodeenv}" >> ".env"
+echo "${plexmediaenv}" >> ".env"
+
+echo ">>>  Created .env file for Plex Media Server..."
+echo ">>>--------------------------------------------"
+cat ".env"
+echo ">>>--------------------------------------------"
+
+echo ">>>"
+echo ">>> Plex Server is now ready to run..."
+echo ">>>"
+echo ">>> !!! You will first need a Plex Server Claim Token from https://www.plex.tv/claim/ !!!"
+echo ">>>"
+echo ">>> $ PLEX_CLAIM=<claim token> docker-compose up -d"
+echo ">>>"
+echo ">>> bye bye"

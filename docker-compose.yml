@@ -1,0 +1,28 @@
+# docker-compose file for plex server using bridge networking
+
+version: "3.7"
+services:
+  plexserver:
+    image: plexinc/pms-docker
+    container_name: plex
+    environment:
+      - PLEX_UID=1000
+      - PLEX_GID=513
+      - TZ=America/New_York
+      - UMASK_SET=002
+      - PLEX_CLAIM=${PLEX_CLAIM}
+    volumes:
+      - ${PLEX_CONFIG}:/config
+      - ${PLEX_TRANSCODE}:/transcode
+      - ${PLEX_MEDIA}:/Media:ro
+    ports:
+      - 32400:32400/tcp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    restart: unless-stopped
