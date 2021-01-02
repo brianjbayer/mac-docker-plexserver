@@ -1,4 +1,4 @@
-# My Docker Plex Media Server
+# Docker Plex Media Server
 This is a basic setup for running a Plex Media Server
 using the official Plex Media Server image
 and docker-compose.
