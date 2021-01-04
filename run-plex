@@ -1,0 +1,60 @@
+#!/bin/bash
+# Interactively runs the default plex server based out of this directory
+# using the docker-compose
+
+prompt-to-proceed () {
+  echo ""
+  read -p "Do you wish to proceed  ('n' to exit): " response
+  if [[ $response == 'n' ]] || [[ $response == 'N' ]]; then
+    echo ">>> buh-bye"
+    exit
+  fi
+  echo ""
+}
+
+echo ">>>"
+echo ">>> This script interactively runs the default container-based"
+echo ">>> Plex Media Server based out of this directory"
+
+echo ">>>"
+echo ">>> Make sure you have Docker running"
+prompt-to-proceed
+
+echo "!!! You will first need a Plex Server Claim Token !!!"
+echo "----------------------------------"
+echo "--- https://www.plex.tv/claim/ ---"
+echo "----------------------------------"
+echo ""
+read -p "Enter the Plex Server Claim Code => " plexclaim
+echo ""
+plexclaimenvstring="PLEX_CLAIM=${plexclaim}"
+
+dockercomposecmd="${plexclaimenvstring} docker-compose "
+echo ">>> Ready to start Plex Media Server with [${dockercomposecmd}]"
+
+prompt-to-proceed
+
+echo ">>> Plex Media Server Config"
+dcconfigcmd="${dockercomposecmd} config "
+echo ">>>  $ ${dcconfigcmd}"
+eval "${dcconfigcmd}"
+echo ".............................................."
+
+
+echo ">>> Starting Plex Media Server..."
+dcupcmd="${dockercomposecmd} up -d "
+echo ">>>   $ ${dcupcmd}"
+eval "${dcupcmd}"
+echo ".............................................."
+
+echo""
+echo "!!! Finish Startup/Administer Plex Media Server !!!"
+echo "---------------------------"
+echo "--- http://app.plex.tv/ ---"
+echo "---------------------------"
+echo ""
+echo ""
+echo "!!! And to STOP the Plex Media Server !!!"
+echo "$ ${dockercomposecmd} down"
+echo ""
+echo ">>> peace out."
