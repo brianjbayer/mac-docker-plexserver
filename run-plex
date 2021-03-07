@@ -19,8 +19,16 @@ echo " This script interactively runs the default, previously configured"
 echo " container-based Plex Media Server based out of this directory"
 
 echo ""
-echo "Make sure you have Docker running"
-prompt-to-proceed
+echo " Checking if Docker is running..."
+if (! docker stats --no-stream ); then
+  echo ""
+  echo "!!! Docker is not running, please start Docker and !!!"
+  echo "!!! once Docker is fully started, re-run this script !!!"
+  echo ""
+  exit 86
+fi
+echo " ...Docker is running"
+echo ""
 
 echo " You will first need a Plex Server Claim Token"
 echo " In a web browser, go to..."
