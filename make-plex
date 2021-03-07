@@ -3,72 +3,75 @@
 
 create_directory () {
   dir=$1
-  echo ">>>     creating directory: [${dir}]"
+  echo " creating directory [${dir}]"
+  # mkdir -p is non-destructive
   mkdir -p "${dir}"
   if [[ ! -d "${dir}" ]]; then
-    echo "=== ERROR: Unable to create directory [${dir}] ===" 1>&2
+    echo "!!! ERROR: Unable to create directory [${dir}] !!!" 1>&2
     exit 66
   fi
+  echo " ...directory [${dir}] created"
 }
 
-echo ">>>"
-echo ">>> This script creates a default container-based Plex Media Server"
-echo ">>> based out of this directory."
+echo " >>>- CONFIGURING PLEXSERVER -<<<"
 echo ""
-read -p "Do you wish to proceed  ('n' to exit): " response
+echo " This script creates a container-based Plex Media Server"
+echo " based out of this directory."
+echo ""
+echo " NOTE that it will NOT overwrite or destroy existing directories or files."
+echo ""
+read -p "Do you wish to proceed (Press any key to continue or 'n' to exit)? " response
 if [[ $response == 'n' ]] || [[ $response == 'N' ]]; then
-  echo ">>> buh-bye"
+  echo " buh-bye"
+  echo ""
   exit
 fi
 
 echo ""
-read -p "Enter the full path to starting directory of your Media for the Plex Media Server: " plexservermedia
-echo ""
-echo ">>> Plex Media Server Media at [${plexservermedia}]"
-
-echo ">>>"
-echo ">>> Creating Plex Server temp data directories..."
+echo " Creating Plex Server Working Directories..."
 plexserverdatadir="${PWD}/.plex-server/data"
-echo ">>>   creating Plex Server data directory: [${plexserverdatadir}]"
 create_directory "${plexserverdatadir}"
 
 configdir="${plexserverdatadir}/config"
-echo ">>>   creating Plex Server data config directory: [${configdir}]"
 create_directory "${configdir}"
 
 transcodedir="${plexserverdatadir}/transcode"
-echo ">>>   creating Plex Server data transcode directory: [${transcodedir}]"
 create_directory "${transcodedir}"
 
-echo ">>>"
-echo ">>> Environment Variables for Plex Media Server..."
+echo ""
+read -p "ENTER the full path to the starting directory of your Media for the Plex Media Server: " plexservermedia
+echo ""
+echo " Setting Plex Media Server Media to [${plexservermedia}]"
+if [[ ! -d "${plexservermedia}" ]]; then
+  echo "!!! FYI, currently there is no directory at [${plexservermedia}] !!!"
+fi
+
+echo ""
+echo " Setting Environment Variables for Plex Media Server..."
 configenv="PLEX_CONFIG=${configdir}"
 transcodeenv="PLEX_TRANSCODE=${transcodedir}"
 plexmediaenv="PLEX_MEDIA=${plexservermedia}"
-echo ">>>   [${configenv}]"
-echo ">>>   [${transcodeenv}]"
-echo ">>>   [${plexmediaenv}]"
+echo "  [${configenv}]"
+echo "  [${transcodeenv}]"
+echo "  [${plexmediaenv}]"
 
-echo ">>> Creating .env file for Plex Server docker-compose..."
+echo " Creating .env file for Plex Server docker-compose..."
 if [[ -f ".env" ]]; then
-  echo "=== ERROR: .env file already exists ===" 1>&2
+  echo "!!! ERROR: .env file already exists !!!" 1>&2
   exit 88
 fi
-
+echo " Writing .env file..."
 echo "${configenv}" >> ".env"
 echo "${transcodeenv}" >> ".env"
 echo "${plexmediaenv}" >> ".env"
 
-echo ">>>  Created .env file for Plex Media Server..."
-echo ">>>--------------------------------------------"
+echo " Created .env file for Plex Media Server..."
+echo "---------------------------------------------"
 cat ".env"
-echo ">>>--------------------------------------------"
+echo "---------------------------------------------"
 
-echo ">>>"
-echo ">>> Plex Server is now ready to run..."
-echo ">>>"
-echo ">>> !!! You will first need a Plex Server Claim Token from https://www.plex.tv/claim/ !!!"
-echo ">>>"
-echo ">>> $ PLEX_CLAIM=<claim token> docker-compose up -d"
-echo ">>>"
-echo ">>> bye bye"
+echo ""
+echo " Your Plex Server is now ready to run..."
+echo ""
+echo ">>> peace out <<<"
+echo ""
