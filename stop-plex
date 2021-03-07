@@ -1,0 +1,43 @@
+#!/bin/bash
+# Interactively stops the plex server based out of this directory
+# assumed to be started by the run-plex script
+
+echo " >>>- STOPPING PREVIOUSLY STARTED PLEXSERVER -<<<"
+echo ""
+echo " This script stops the previously started Plex Media Server"
+echo " based out of this directory."
+
+echo ""
+echo " Checking for Plex Media Server..."
+if ! docker-compose exec plexserver sh -c 'echo " ...Hello, world"' ; then
+  echo "!!! ERROR: Unable to access Plex Media Server to stop it !!!" 1>&2
+  exit 66
+fi
+
+echo ""
+echo " Getting Plex Claim Token from Plex Media Server..."
+PLEX_CLAIM=`docker-compose exec plexserver sh -c 'echo "${PLEX_CLAIM}"'`
+if [[ -z "${PLEX_CLAIM}" ]]; then
+  echo " WARNING: Unable to determine Plex Claim Token"
+else
+  echo " ...Plex Claim Token is ${PLEX_CLAIM}"
+fi
+
+echo ""
+echo " Ready to stop Plex Media Server..."
+echo ""
+read -p "Do you wish to STOP the Plex Media Server (Press any key to continue or 'n' to exit)? " response
+if [[ $response == 'n' ]] || [[ $response == 'N' ]]; then
+  echo " buh-bye"
+  echo ""
+  exit
+fi
+
+echo ""
+echo " Stopping Plex Media Server..."
+PLEX_CLAIM=${PLEX_CLAIM} docker-compose down
+echo ".............................................."
+
+echo ""
+echo ">>> peace out <<<"
+echo ""

@@ -1,7 +1,14 @@
-# Docker Plex Media Server
-This is a basic setup for running a Plex Media Server
-using the official Plex Media Server image
-and docker-compose.
+# Docker-Based Plex Media Server
+Just `git clone` and run the scripts.
+
+This project provides a **scripted** basic Plex Media Server
+in the project's directory using the official Plex Media Server
+image and docker-compose.
+
+It has three idempotent and non-destructive scripts:
+  1. run `make-plex` once to create your Plex Media Server
+  2. run `run-plex` to run your Plex Media Server
+  3. run `stop-plex` to stop your running Plex Media Server
 
 This setup is for access for the **internal network only!**
 
@@ -28,7 +35,7 @@ To Run your Plex Media Server...
      Plex Server run and to manage your Plex Media Server
   3. Run the `./run-plex` script and follow the prompts
      to run the Plex Media Server using your `.env` file
-  4. When promted browse to https://www.plex.tv/claim/ (and login)
+  4. When prompted browse to https://www.plex.tv/claim/ (and login)
      to get the Claim token
   5. Enter the Claim token when prompted by the script
   6. When the script completes, browse to http://app.plex.tv/
@@ -36,5 +43,5 @@ To Run your Plex Media Server...
 
 #### Stop
 To stop your plex Media Server...
-  1. Run `PLEX_CLAIM=<your-claim-token-here> docker-compose down`
+  1. Run the `./stop-plex` script and follow the prompts
      to stop your Plex Media Server
