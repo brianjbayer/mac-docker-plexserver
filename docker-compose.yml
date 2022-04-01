@@ -6,11 +6,12 @@ services:
     image: plexinc/pms-docker
     container_name: plex
     environment:
-      - PLEX_UID=1000
-      - PLEX_GID=513
+      - PLEX_UID
+      - PLEX_GID
       - TZ=America/New_York
       - UMASK_SET=002
-      - PLEX_CLAIM=${PLEX_CLAIM}
+      - PLEX_CLAIM
+      - ADVERTISE_IP
     volumes:
       - ${PLEX_CONFIG}:/config
       - ${PLEX_TRANSCODE}:/transcode

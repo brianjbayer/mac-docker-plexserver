@@ -15,6 +15,15 @@ if ! docker-compose exec plexserver sh -c 'echo " ...Hello, world"' ; then
 fi
 
 echo ""
+echo " Getting Advertise Address from Plex Media Server..."
+ADVERTISE_IP=`docker-compose exec plexserver sh -c 'echo "${ADVERTISE_IP}"'`
+if [[ -z "${ADVERTISE_IP}" ]]; then
+  echo " WARNING: Unable to determine Advertise Address"
+else
+  echo " ...Advertise Address is ${ADVERTISE_IP}"
+fi
+
+echo ""
 echo " Getting Plex Claim Token from Plex Media Server..."
 PLEX_CLAIM=`docker-compose exec plexserver sh -c 'echo "${PLEX_CLAIM}"'`
 if [[ -z "${PLEX_CLAIM}" ]]; then
@@ -35,7 +44,7 @@ fi
 
 echo ""
 echo " Stopping Plex Media Server..."
-PLEX_CLAIM=${PLEX_CLAIM} docker-compose down
+docker-compose down
 echo ".............................................."
 
 echo ""

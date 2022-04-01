@@ -1,5 +1,5 @@
 #!/bin/bash
-# Makes a default plex server based out of this directory
+# Makes a default Docker-based plex server based out of this directory
 
 create_directory () {
   dir=$1
@@ -28,6 +28,14 @@ if [[ $response == 'n' ]] || [[ $response == 'N' ]]; then
 fi
 
 echo ""
+current_user=$(whoami)
+echo " Creating Plex Server for current user: ${current_user}"
+current_uid=$(id -u $current_user)
+current_gid=$(id -g $current_user)
+echo "  current user UID: ${current_uid}"
+echo "  current user GID: ${current_gid}"
+
+echo ""
 echo " Creating Plex Server Working Directories..."
 plexserverdatadir="${PWD}/.plex-server/data"
 create_directory "${plexserverdatadir}"
@@ -48,11 +56,15 @@ fi
 
 echo ""
 echo " Setting Environment Variables for Plex Media Server..."
+plexuidenv="PLEX_UID=${current_uid}"
+echo "  [${plexuidenv}]"
+plexgidenv="PLEX_GID=${current_gid}"
+echo "  [${plexgidenv}]"
 configenv="PLEX_CONFIG=${configdir}"
-transcodeenv="PLEX_TRANSCODE=${transcodedir}"
-plexmediaenv="PLEX_MEDIA=${plexservermedia}"
 echo "  [${configenv}]"
+transcodeenv="PLEX_TRANSCODE=${transcodedir}"
 echo "  [${transcodeenv}]"
+plexmediaenv="PLEX_MEDIA=${plexservermedia}"
 echo "  [${plexmediaenv}]"
 
 echo " Creating .env file for Plex Server docker-compose..."
@@ -61,6 +73,8 @@ if [[ -f ".env" ]]; then
   exit 88
 fi
 echo " Writing .env file..."
+echo "${plexuidenv}" >> ".env"
+echo "${plexgidenv}" >> ".env"
 echo "${configenv}" >> ".env"
 echo "${transcodeenv}" >> ".env"
 echo "${plexmediaenv}" >> ".env"
