@@ -1,9 +1,14 @@
-# Docker-Based Plex Media Server
+# Docker-Based Plex Media Server for Mac
+> 	:apple: While this _should_ be mostly compatible with any _'nix_
+> operating system, it is specifically developed and tested on macOS
+> and there are some macOS-specific commands and assumptions in the
+> scripts.
+
 Just `git clone` and run the scripts.
 
 This project provides a **scripted** basic Plex Media Server
 in the project's directory using the official Plex Media Server
-image and docker-compose.
+image and Docker Compose.
 
 It has three idempotent and non-destructive scripts:
   1. run `make-plex` once to create your Plex Media Server
@@ -38,8 +43,12 @@ To Run your Plex Media Server...
   4. When prompted browse to https://www.plex.tv/claim/ (and login)
      to get the Claim token
   5. Enter the Claim token when prompted by the script
-  6. When the script completes, browse to http://app.plex.tv/
-     to finish startup and manage your Plex Media Server
+  6. When the script completes, browse to the URL listed
+     in the output of the `./run-plex` script to finish startup
+     and manage your Plex Media Server
+
+> :point_right: you should always be able to reach your running
+> Plex Media Server at http://localhost:32400/
 
 #### Stop
 To stop your plex Media Server...
