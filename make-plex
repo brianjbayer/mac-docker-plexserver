@@ -1,5 +1,14 @@
 #!/bin/bash
+# -----------------------------------------------------------------------
+# This script interactively makes a Docker-based Plex Media Server
+# based out of this directory creating the .env file containing
+# the Plex Media Server's confguration
+# -----------------------------------------------------------------------
+
 # Makes a default Docker-based plex server based out of this directory
+
+# Exit script on any errors
+set -e
 
 create_directory () {
   dir=$1
@@ -15,8 +24,8 @@ create_directory () {
 
 echo " >>>- CONFIGURING PLEXSERVER -<<<"
 echo ""
-echo " This script creates a container-based Plex Media Server"
-echo " based out of this directory."
+echo " This script creates a container-based Plex Media Server based out of"
+echo " this directory."
 echo ""
 echo " NOTE that it will NOT overwrite or destroy existing directories or files."
 echo ""
@@ -47,7 +56,8 @@ transcodedir="${plexserverdatadir}/transcode"
 create_directory "${transcodedir}"
 
 echo ""
-read -p "ENTER the full path to the starting directory of your Media for the Plex Media Server: " plexservermedia
+echo " Enter the starting directory of your Media for the Plex Media Server..."
+read -p "ENTER the full path with NO ending /: " plexservermedia
 echo ""
 echo " Setting Plex Media Server Media to [${plexservermedia}]"
 if [[ ! -d "${plexservermedia}" ]]; then
@@ -55,7 +65,7 @@ if [[ ! -d "${plexservermedia}" ]]; then
 fi
 
 echo ""
-echo " Setting Environment Variables for Plex Media Server..."
+echo " Configuring Environment Variables for Plex Media Server..."
 plexuidenv="PLEX_UID=${current_uid}"
 echo "  [${plexuidenv}]"
 plexgidenv="PLEX_GID=${current_gid}"

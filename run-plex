@@ -1,7 +1,15 @@
 #!/bin/bash
-# Interactively runs the plex server based out of this directory
-# using docker-compose
-# Assumes macOS specifically when getting the local host IP
+# -----------------------------------------------------------------------
+# This script interactively runs the previously created Plex Media Server
+# based out of this directory using docker-compose and the confguration
+# in the created .env file
+#
+# ASSUMES macOS specifically when getting the local host IP
+#
+# -----------------------------------------------------------------------
+
+# Exit script on any errors
+set -e
 
 prompt-to-proceed () {
   echo ""
@@ -31,14 +39,15 @@ fi
 echo " ...Docker is running"
 echo ""
 
-echo " Determining the Advertise Address for Plex Media Server..."
+echo " Setting the Advertise Address for Plex Media Server..."
 # macOS https://apple.stackexchange.com/questions/20547/how-do-i-find-my-ip-address-from-the-command-line
 host_ip=$(ipconfig getifaddr en0)
 echo "  The local host IP is [${host_ip}]"
 advertise_address="${host_ip}:32400/"
 echo "  Advertise Address is [${advertise_address}]"
 echo ""
-advertiseipenvstring="ADVERTISE_IP=${advertise_address}"
+export ADVERTISE_IP="${advertise_address}"
+dockercomposecmdenv="ADVERTISE_IP=${advertise_address}"
 
 
 echo " You will first need a Plex Server Claim Token"
@@ -49,24 +58,22 @@ echo "----------------------------------"
 echo ""
 read -p "ENTER the Plex Server Claim Code => " plexclaim
 echo ""
-plexclaimenvstring="PLEX_CLAIM=${plexclaim}"
+export PLEX_CLAIM=${plexclaim}
+dockercomposecmdenv="${dockercomposecmdenv} PLEX_CLAIM=${plexclaim}"
 
-dockercomposecmd="${advertiseipenvstring} ${plexclaimenvstring} docker-compose "
+dockercomposecmd="docker-compose"
 
-echo " The Plex Media Server Config..."
 dcconfigcmd="${dockercomposecmd} config "
-echo " $ ${dcconfigcmd}"
-eval "${dcconfigcmd}"
+echo " The Plex Media Server Config [$dcconfigcmd]..."
+$dcconfigcmd
 echo ".............................................."
 
 echo ""
-echo " Ready to start Plex Media Server with [${dockercomposecmd}]"
-prompt-to-proceed
-
-echo " Starting Plex Media Server..."
 dcupcmd="${dockercomposecmd} up -d "
-echo "  $ ${dcupcmd}"
-eval "${dcupcmd}"
+echo " Ready to start Plex Media Server with [$dcupcmd]"
+prompt-to-proceed
+echo " Starting Plex Media Server..."
+$dcupcmd
 echo ".............................................."
 
 echo ""
@@ -78,7 +85,7 @@ echo "-----------------------------------------------------"
 echo " it will take a few minutes for your plexserver to start"
 echo ""
 echo " To STOP the Plex Media Server, enter this command..."
-echo "$ ${dockercomposecmd} down"
+echo "$ ${dockercomposecmdenv} ${dockercomposecmd} down"
 echo ""
 echo ">>> peace out <<<"
 echo ""
