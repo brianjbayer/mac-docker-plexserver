@@ -17,7 +17,7 @@ It has three idempotent and non-destructive scripts:
 
 > This setup is for access for the **internal network only!**
 
-### To Setup The Plex Media Server...
+### To Setup the Plex Media Server...
 You should only need to create your Plex Media Server once.
 
 To use this...
@@ -27,7 +27,7 @@ To use this...
      to create the Plex Media Server Data Directories
      and `.env` file for the Docker Compose orchestration
 
-### To Run The Plex Media Server...
+### To Run the Plex Media Server...
 Once you have created a Plex Media Server, you can run and stop
 it as many times as you want.
 
@@ -60,3 +60,13 @@ To Run your Plex Media Server...
 To stop your Plex Media Server...
   1. Run `./stop-plex` script and follow the prompts
      to stop your Plex Media Server
+
+### To PERMANENTLY DESTROY the Plex Media Server...
+
+> **WARNING:** This action can not be undone!
+
+To permanently destroy a created Plex Media Server but keep these
+project files, use the `.destroy-plex` script.
+
+  1. Run `./destroy-plex` script and follow the prompts
+     to destroy your Plex Media Server

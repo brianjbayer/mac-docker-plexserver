@@ -1,0 +1,39 @@
+#!/bin/bash
+# -----------------------------------------------------------------------
+# This script PERMANENTLY DESTROYS the Plex Media Server based out of
+# this directory
+# -----------------------------------------------------------------------
+
+# Exit script on any errors
+set -e
+
+echo " >>>- PERMANENTLY DESTROYING THE PLEXSERVER -<<<"
+echo ""
+echo " This script PERMANENTLY DESTROYS the Plex Media Server based"
+echo " out of this directory."
+
+echo ""
+echo "Do you REALLY wish to PERMANENTLY DESTROY the Plex Media Server..."
+# TODO: LEX U R HERE MAKE ENTER Key to confirm - reverse logic
+read -p "Press any key to EXIT or enter 'DESTROY' to permanently destroy)? " response
+# Strip leading and trailing whitespace and fold case to upper
+response=$(echo "${response}" | xargs | tr '[a-z]' '[A-Z]' )
+if [[ $response != 'DESTROY' ]]; then
+  echo " buh-bye"
+  echo ""
+  exit
+fi
+
+echo ""
+echo " Destroying Plex Media Server but maintaining project files..."
+# Allow to fail to purge it all
+set +e
+echo "  Destroying Plex Media Server Docker Compose configuration file..."
+rm .env
+echo "  Destroying Plex Media Server configuration files..."
+rm -rf .plex-server
+set -e
+
+echo ""
+echo ">>> peace out <<<"
+echo ""
